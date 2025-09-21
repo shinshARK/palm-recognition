@@ -118,8 +118,8 @@
     - Sebuah model dasar dilatih menggunakan arsitektur CNN sederhana dan set pasangan data yang dibuat di awal (_pre-generated_).
     - Hasil menunjukkan bahwa model dapat belajar, namun kinerjanya masih rendah.
     - #align(center)[
-        *Akurasi Keseluruhan: 32%* [cite: 1727] \
-        *Weighted F1-Score: 0.30* [cite: 1737]
+        *Akurasi Keseluruhan: 32%*  \
+        *Weighted F1-Score: 0.30* 
       ]
     - Laporan menunjukkan varians yang tinggi: beberapa subjek dikenali dengan sempurna, sementara banyak subjek lainnya gagal dikenali sama sekali.
   ][
@@ -159,8 +159,8 @@
 #slide(title: "Kesimpulan & Saran Pengembangan")[
   *Kesimpulan:*
   - Alur kerja _end-to-end_ untuk pengenalan telapak tangan berhasil dibangun dan diuji.
-  - Metode ekstraksi ROI berbasis centroid terbukti menjadi langkah pra-pemrosesan yang kuat dan konsisten. [cite: 508]
-  - Model dasar berhasil membuktikan konsep dengan akurasi 32%, menunjukkan bahwa pendekatan Jaringan Siamese dapat diterapkan untuk tugas ini. [cite: 1727]
+  - Metode ekstraksi ROI berbasis centroid terbukti menjadi langkah pra-pemrosesan yang kuat dan konsisten. 
+  - Model dasar berhasil membuktikan konsep dengan akurasi 32%, menunjukkan bahwa pendekatan Jaringan Siamese dapat diterapkan untuk tugas ini. 
 
   *Saran Pengembangan:*
   - Mengimplementasikan L2 Normalization untuk menstabilkan model V2 dan mengevaluasi kinerjanya secara penuh.
