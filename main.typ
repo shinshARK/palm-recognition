@@ -10,8 +10,8 @@
 
 // Slide Judul
 #front-slide(
-  title: "Pengenalan Telapak Tangan Menggunakan Jaringan Siamese",
-  subtitle: [Pendekatan Deep Learning untuk Identifikasi Biometrik],
+  title: "Palm Print recognition Menggunakan Jaringan Siamese",
+  subtitle: [Pendekatan Machine Learning untuk Identifikasi Biometrik],
   authors: "Jidan Abdurahman Aufan, 2205422\nJason Suryoatmojo, 22aaaaa",
   info: [Financial Technology, 22 September 2025],
 )
@@ -37,9 +37,10 @@
       - *Birjand University Mobile Palmprint Database (BMPD)*
     - Kedua dataset ini menyediakan ribuan gambar dari lebih dari 100 subjek, yang menjadi data utama untuk proyek ini.
   ][
-    #rect(width: 80%, height: 200pt)[
-      #align(center + horizon)[*Placeholder untuk* \ *Contoh Gambar dari Dataset*]
-    ]
+    #figure(
+      image("images/001_F_0.JPG", width: 80%, height: 200pt),
+      caption: [Contoh gambar telapak tangan dari dataset SMPD.]
+    )
   ]
 ]
 
@@ -50,17 +51,16 @@
 #slide(title: "Ekstraksi ROI: Pendekatan Awal (Valley Points)")[
   - Pendekatan awal untuk ekstraksi ROI adalah dengan metode _valley-point_. Tujuannya adalah untuk menemukan titik-titik kunci (sela-sela jari) sebagai patokan.
   - *Proses Kerja:*
-    - Membuat _convex hull_ di sekitar kontur tangan.
-    - Menganalisis _convexity defects_ untuk menemukan lembah (_valley_) di antara jari.
-    - Menyaring _defect_ berdasarkan sudut dan posisi untuk memilih kandidat yang relevan.
-  - *Kelemahan:* Metode ini terbukti #reddy("tidak stabil dan sering gagal") (_unreliable_) pada dataset yang digunakan, karena adanya variasi pencahayaan dan posisi tangan.
+    - Membuat _silhouette_ tangan dari image.
+    - Mendeteksi _contour_ terbesar untuk mengambil bentuk tangan.
+    - Mendeteksi _defect_ berdasarkan sudut dan posisi untuk memilih kandidat _valley_ yang relevan (sela jari).
+    - Menetapkan ROI berdasarkan sela jari Kelingking-Manis dan sela jari Telunjuk-Tengah
+  - *Kelemahan:* Metode ini terbukti #reddy("tidak stabil dan sering gagal") (_unreliable_) pada dataset yang digunakan, karena adanya variasi posisi tangan, pencahayaan, juga beberapa tidak menyebarkan jari nya sehingga sela jari sulit dideteksi.
 ]
 
 #slide(title: "Visualisasi Proses: Pendekatan Valley Points")[
   #align(center)[
-    #rect(width: 95%, height: 300pt)[
-      #align(center + horizon)[*Placeholder untuk* \ *Visualisasi Multi-Langkah Metode Valley Points*]
-    ]
+    #image("images/valley.png", width: 110%, )
   ]
   #align(center)[
     Visualisasi langkah-langkah pemrosesan: dari siluet, kontur, deteksi titik kunci, hingga ekstraksi ROI akhir.
@@ -68,7 +68,7 @@
 ]
 
 #slide(title: "Ekstraksi ROI: Pendekatan Final (Centroid)")[
-  - Karena metode _valley-point_ tidak stabil, pendekatan yang lebih #greeny("_robust_") dan konsisten digunakan.
+  - Karena metode _valley-point_ tidak stabil, pendekatan yang lebih _robust_ dan konsisten digunakan.
   - Metode ini berfokus pada titik pusat (centroid) dari kontur telapak tangan untuk ekstraksi langsung.
   - *Proses Kerja:*
     - Menemukan kontur tangan yang bersih.
