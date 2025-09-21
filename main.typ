@@ -11,8 +11,8 @@
 // Slide Judul
 #front-slide(
   title: "Pengenalan Telapak Tangan Menggunakan Jaringan Siamese",
-  subtitle: [Pendekatan Deep Learning untuk Identifikasi Biometrik],
-  authors: "Jidan Abdurahman Aufan, 2205422\nJason Suryoatmojo, 2204524",
+  subtitle: [Pendekatan Machine Learning untuk Identifikasi Biometrik],
+  authors: "Jidan Abdurahman Aufan, 2205422\nJason Suryoatmojo, 2204524\nKelompok 1",
   info: [Financial Technology, 22 September 2025],
 )
 
@@ -37,10 +37,10 @@
       - *Birjand University Mobile Palmprint Database (BMPD)*
     - Kedua dataset ini menyediakan ribuan gambar dari lebih dari 100 subjek, yang menjadi data utama untuk proyek ini.
   ][
-#figure(
-  image("images/Screenshot 2025-09-21 205427.png", width: 80%, height: 200pt),
-  caption: [Contoh gambar telapak tangan dari dataset SMPD.]
-)
+    #figure(
+      image("images/Screenshot 2025-09-21 205427.png", width: 80%, height: 200pt),
+      caption: [Contoh gambar telapak tangan dari dataset SMPD.],
+    )
   ]
 ]
 
@@ -59,14 +59,26 @@
 ]
 
 #slide(title: "Visualisasi Proses: Pendekatan Key Points")[
- 
+
   #v(1em) // Memberi sedikit spasi vertikal
-#figure(
-  image("image.png", width: 100%, height: 150pt),
-  caption: [Contoh visualisasi Pendekatan Valley-point.]
-)
+  #figure(
+    image("image.png", width: 100%, height: 150pt),
+    caption: [Contoh visualisasi Pendekatan Valley-point.],
+  )
   #align(center)[
     Visualisasi langkah-langkah pemrosesan: dari *silhouette*, *contour*, deteksi *key points*, *baseline*, hingga ekstraksi *ROI* akhir.
+  ]
+]
+
+#slide(title: "Visualisasi Proses: Pendekatan Key Points Gagal")[
+
+  #v(1em) // Memberi sedikit spasi vertikal
+  #figure(
+    image("images/fail.png", width: 100%, height: 150pt),
+    caption: [Contoh visualisasi Pendekatan Valley-point gagal.],
+  )
+  #align(center)[
+    Karena memilih pasangan point yang jarak nya terjauh, salah memakai point sela ibu jari.
   ]
 ]
 
@@ -82,10 +94,10 @@
 
 #slide(title: "Visualisasi Proses: Pendekatan Centroid")[
   // Mengganti placeholder dengan grid 5 kolom untuk setiap langkah
- #figure(
-  image("images/Screenshot 2025-09-21 215427.png", width: 100%, height: 150pt),
-  caption: [Contoh visualisasi pendekatan centroid]
-)
+  #figure(
+    image("images/Screenshot 2025-09-21 215427.png", width: 100%, height: 150pt),
+    caption: [Contoh visualisasi pendekatan centroid],
+  )
 
   #v(1em) // Memberi sedikit spasi vertikal
 
@@ -95,10 +107,10 @@
 ]
 
 #slide(title: "Arsitektur Jaringan Siamese")[
-    - *Jaringan Siamese* digunakan karena ideal untuk tugas pengenalan.
-    - Arsitektur ini menggunakan dua "jaringan dasar" yang identik dan berbagi bobot (_weights_).
-    - Setiap jaringan mengubah gambar menjadi sebuah *vektor fitur* (embedding) numerik.
-    - Tujuan model adalah untuk mempelajari ruang fitur di mana vektor dari #greeny("orang yang sama") menjadi berdekatan, dan vektor dari #reddy("orang yang berbeda") menjadi berjauhan.
+  - *Jaringan Siamese* digunakan karena ideal untuk tugas pengenalan.
+  - Arsitektur ini menggunakan dua "jaringan dasar" yang identik dan berbagi bobot (_weights_).
+  - Setiap jaringan mengubah gambar menjadi sebuah *vektor fitur* (embedding) numerik.
+  - Tujuan model adalah untuk mempelajari ruang fitur di mana vektor dari #greeny("orang yang sama") menjadi berdekatan, dan vektor dari #reddy("orang yang berbeda") menjadi berjauhan.
 ]
 
 #slide(title: "Proses Pelatihan")[
@@ -111,6 +123,21 @@
 
 #title-slide[
   Hasil & Eksperimen
+]
+
+#slide(title: "Pelatihan Model Dasar")[
+  #cols(columns: (1.2fr, 1fr))[
+    - Pelatihan model dasar menunjukkan tren pembelajaran yang sangat baik, di mana #bluey("training loss") dan #reddy("validation loss") sama-sama menurun secara konsisten.
+    - Namun, seiring berjalannya epoch, mulai terlihat celah (_gap_) di antara kedua kurva. #reddy("Validation loss") mulai stagnan sementara #bluey("training loss") terus anjlok.
+    - Ini adalah indikasi klasik dari #stress[overfitting]: model mulai terlalu menghafal data latih dan kehilangan kemampuan untuk generalisasi pada data baru.
+    - Hasil ini mendorong perlunya perbaikan untuk meningkatkan regularisasi dan kemampuan generalisasi model.
+  ][
+    #figure(
+      // Ganti dengan gambar plot training loss model dasar Anda
+      image("images/training1.png", width: 100%, height: 200pt),
+      caption: [Riwayat Pelatihan Model Dasar],
+    )
+  ]
 ]
 
 #slide(title: "Hasil: Model Dasar")[
@@ -134,12 +161,12 @@
 
     figure(
       image("images/image.png", width: 90%),
-      caption: [Contoh Prediksi Berhasil]
+      caption: [Contoh Prediksi Berhasil],
     ),
 
     figure(
       image("images/image copy.png", width: 90%),
-      caption: [Contoh Prediksi Gagal]
+      caption: [Contoh Prediksi Gagal],
     ),
   )
 ]
@@ -154,18 +181,43 @@
   3. #stress[Augmentasi Data]: Menambahkan transformasi acak seperti _flip_ dan rotasi pada gambar pelatihan untuk menciptakan lebih banyak variasi data.
 ]
 
-#slide(title: "Tantangan: Pelatihan yang Tidak Stabil")[
+#slide(title: "Hasil: Model V2")[
+  #v(2em) // Memberi spasi vertikal
+  - Model V2 dilatih menggunakan arsitektur CNN yang lebih dalam, augmentasi data, dan generator data dinamis.
+  - Hasil menunjukkan model dapat belajar dari data latih, namun kinerja generalisasinya secara keseluruhan masih rendah.
+  - #block(inset: (top: 1em, bottom: 1em))[
+      #align(center)[
+        *Akurasi Keseluruhan: 32%* \
+        *Weighted F1-Score: 0.31*
+      ]
+    ]
+  - Laporan klasifikasi menunjukkan varians yang sangat tinggi: beberapa subjek dikenali dengan baik (F1 > 0.7), sementara banyak subjek lainnya gagal dikenali sama sekali (F1 = 0.00).
+]
+
+#slide(title: "Hasil Model V2: Generalisasi")[
   #cols(columns: (1.2fr, 1fr))[
-    - Uji coba awal dari model V2 yang ditingkatkan menunjukkan tanda-tanda *pelatihan yang tidak stabil*.
-    - #bluey("Training loss") menurun, namun #reddy("validation loss") meledak ke nilai yang sangat tinggi.
-    - Masalah klasik ini biasanya disebabkan oleh nilai vektor fitur keluaran yang menjadi tidak terbatas.
-    - Solusinya adalah dengan menambahkan lapisan *L2 Normalization* pada akhir jaringan dasar untuk membatasi nilai vektor dan menstabilkan pelatihan.
+    - Untuk mengatasi #stress[overfitting] pada model dasar, model V2 dilatih dengan tugas yang jauh lebih sulit, menggunakan augmentasi dan generator data dinamis.
+    - Pelatihan berjalan #greeny[stabil] dan tidak mengalami _loss_ yang meledak. Nilai _loss_ secara umum lebih tinggi, yang wajar terjadi karena variasi data latih yang jauh lebih besar.
+    - Meskipun kinerja sedikit meningkat, #reddy("validation loss") yang stagnan menunjukkan bahwa tantangan utama tetap pada kualitas dan konsistensi data ROI itu sendiri.
   ][
-     #figure(
-  image("images/Untitled.png", width: 100%, height: 200pt),
-  caption: [Contoh gambar telapak tangan dari dataset SMPD.]
-)
+    #figure(
+      // Gunakan gambar plot training V2 Anda di sini
+      image("images/training2.png", width: 100%, height: 200pt),
+      caption: [Riwayat Pelatihan Model V2 (Stabil)],
+    )
   ]
+]
+
+#slide(title: "Tantangan Utama: Kualitas Data & Preprocessing")[
+  #v(1em)
+  - Meskipun arsitektur model selalu dapat dioptimalkan, hasil pelatihan menyoroti sebuah tantangan yang jelas: kinerja model apapun sangat bergantung pada kualitas data training. Kemungkinan besar, kinerja model kini lebih dibatasi oleh kualitas dan konsistensi data dan Region of Interest (ROI) yang diekstrak.
+
+  - Beberapa tantangan utama dalam tahap _preprocessing_ teridentifikasi:
+    - #stress[Kontur yang Tidak Sempurna]: Pencahayaan yang tidak konsisten pada dataset menghasilkan siluet dengan pinggiran yang tajam, terutama di area pergelangan tangan. Hal ini menciptakan _convexity defects_ palsu yang sering keliru dideteksi sebagai lembah jari oleh algoritma.
+
+    - #stress[Kesulitan Identifikasi Lembah Jari]: Sangat sulit untuk merancang aturan geometris yang dapat secara konsisten membedakan empat lembah jari utama dari lembah ibu jari yang dalam, terutama pada gambar di mana jari-jari tidak terentang sempurna. Hal ini sering menyebabkan pemilihan titik acuan ROI yang salah.
+
+    - #stress[Keterbatasan Aturan Geometris]: Solusi yang lebih andal memerlukan peralihan dari aturan geometris ke metode yang lebih cerdas seperti #bluey[deteksi _landmark_]. Dengan melatih model untuk mengenali setiap lembah secara spesifik (misalnya, "lembah telunjuk-tengah"), kita dapat menerapkan strategi ekstraksi ROI yang berbeda dan lebih akurat, sesuai dengan pasangan titik acuan yang berhasil diidentifikasi.
 ]
 
 #title-slide[
@@ -174,15 +226,19 @@
 
 #slide(title: "Kesimpulan & Saran Pengembangan")[
   *Kesimpulan:*
-  - Alur kerja _end-to-end_ untuk pengenalan telapak tangan berhasil dibangun dan diuji.
-  - Metode ekstraksi ROI berbasis centroid terbukti menjadi langkah pra-pemrosesan yang kuat dan konsisten.
-  - Model dasar berhasil membuktikan konsep dengan akurasi 32%, menunjukkan bahwa pendekatan Jaringan Siamese dapat diterapkan untuk tugas ini.
+  - Alur kerja _end-to-end_ untuk pengenalan telapak tangan berhasil dibangun, mulai dari pra-pemrosesan data hingga pelatihan dan evaluasi Jaringan Siamese.
+  - Metode ekstraksi ROI berbasis #bluey[centroid] terbukti #greeny[andal dan konsisten] untuk data yang bervariasi, meskipun metode berbasis #reddy[valley-point] secara teoretis lebih presisi secara anatomis.
+  - Peningkatan arsitektur ke model V2 berhasil mengatasi #stress[overfitting], namun kinerja akhir tetap terbatas (akurasi ~32%), yang mengindikasikan bahwa #stress[kualitas ROI] adalah faktor pembatas utama saat ini.
+
+]
+
+#slide(title: "Kesimpulan & Saran Pengembangan")[
 
   *Saran Pengembangan:*
-  - Mengimplementasikan L2 Normalization untuk menstabilkan model V2 dan mengevaluasi kinerjanya secara penuh.
-  - Melakukan _tuning_ pada `recognition_threshold` secara sistematis untuk mengoptimalkan kinerja.
-  - #stress[Peningkatan Kualitas Data & Metode Ekstraksi]:
-    - Metode ekstraksi ROI berbasis *valley-point* sangat sensitif terhadap kualitas data. Dengan data yang lebih konsisten (misalnya, pencahayaan studio atau menggunakan pemindai khusus), metode *valley-point* #greeny[*berpotensi memberikan hasil yang lebih unggul*] karena didasarkan pada titik referensi anatomis yang lebih presisi.
+  - #stress[Membangun Dataset Baru]: Membuat dataset baru dengan kondisi yang terkontrol (pencahayaan seragam, pose tangan konsisten) untuk memastikan data cocok dan andal bagi metode ekstraksi ROI yang lebih presisi seperti _valley-point_.
+  - Fokus utama adalah mengembangkan metode ekstraksi ROI hibrida yang menggabungkan #greeny[keandalan pendekatan centroid] dengan #bluey[presisi anatomis pendekatan valley-point].
+  - Mengimplementasikan model #stress[deteksi _landmark_] untuk mengenali setiap lembah jari secara spesifik adalah langkah paling menjanjikan untuk mencapai tujuan tersebut dan meningkatkan kualitas ROI secara signifikan.
+  - Melakukan _hyperparameter tuning_ lebih lanjut pada arsitektur V2, termasuk optimasi `learning rate` dan `recognition_threshold` untuk memaksimalkan potensi model dengan data ROI yang lebih baik.
 ]
 
 #focus-slide[
