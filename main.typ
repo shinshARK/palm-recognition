@@ -1,6 +1,6 @@
 #import "@preview/typslides:1.2.6": *
 
-// Project configuration
+// Konfigurasi Proyek
 #show: typslides.with(
   ratio: "16-9",
   theme: "bluey",
@@ -8,92 +8,167 @@
   link-style: "color",
 )
 
-// The front slide is the first slide of your presentation
+// Slide Judul
 #front-slide(
-  title: "This is a sample presentation",
-  subtitle: [Using _typslides_],
-  authors: "Antonio Manjavacas",
-  info: [#link("https://github.com/manjavacas/typslides")],
+  title: "Pengenalan Telapak Tangan Menggunakan Jaringan Siamese",
+  subtitle: [Pendekatan Deep Learning untuk Identifikasi Biometrik],
+  authors: "Jidan Abdurahman Aufan, 2205422\nJason Suryoatmojo, 22aaaaa",
+  info: [Financial Technology, 22 September 2025],
 )
 
-// Custom outline
+// Daftar Isi
 #table-of-contents()
 
-// Title slides create new sections
+// Slide pemisah untuk memulai bagian baru
 #title-slide[
-  This is a _Title slide_
+  Pendahuluan & Tujuan Proyek
 ]
 
-// A simple slide
-#slide[
-  - This is a simple `slide` with no title.
-  - #stress("Bold and coloured") text by using `#stress(text)`.
-  - Sample link: #link("typst.app").
-    - Link styling using `link-style`: `"color"`, `"underline"`, `"both"`
-  - Font selection using `font: "Fira Sans"`.
-
-  #framed[This text has been written using `#framed(text)`. The background color of the box is customisable.]
-
-  #framed(title: "Frame with title")[This text has been written using `#framed(title:"Frame with title")[text]`.]
+#slide(title: "Latar Belakang: Identifikasi yang Aman")[
+  - Pengenalan biometrik adalah landasan keamanan modern, mulai dari membuka kunci ponsel hingga otorisasi transaksi finansial.
+  - Sidik telapak tangan menawarkan sumber fitur unik yang kaya, menjadikannya kandidat yang sangat baik untuk identifikasi yang kuat.
+  - *Tujuan Proyek:* Membangun dan melatih model _deep learning_ yang mampu mengenali individu secara akurat dari gambar telapak tangan mereka, yang diambil menggunakan kamera ponsel.
 ]
 
-// Focus slide
+#slide(title: "Dataset yang Digunakan")[
+  #cols(columns: (1fr, 1fr))[
+    - Dua dataset utama digunakan untuk melatih dan mengevaluasi model:
+      - *Sapienza University Mobile Palmprint Database (SMPD)*
+      - *Birjand University Mobile Palmprint Database (BMPD)*
+    - Kedua dataset ini menyediakan ribuan gambar dari lebih dari 100 subjek, yang menjadi data utama untuk proyek ini.
+  ][
+    #rect(width: 80%, height: 200pt)[
+      #align(center + horizon)[*Placeholder untuk* \ *Contoh Gambar dari Dataset*]
+    ]
+  ]
+]
+
+#title-slide[
+  Metodologi & Alur Kerja
+]
+
+#slide(title: "Ekstraksi ROI: Pendekatan Awal (Valley Points)")[
+  - Pendekatan awal untuk ekstraksi ROI adalah dengan metode _valley-point_. Tujuannya adalah untuk menemukan titik-titik kunci (sela-sela jari) sebagai patokan.
+  - *Proses Kerja:*
+    - Membuat _convex hull_ di sekitar kontur tangan.
+    - Menganalisis _convexity defects_ untuk menemukan lembah (_valley_) di antara jari.
+    - Menyaring _defect_ berdasarkan sudut dan posisi untuk memilih kandidat yang relevan.
+  - *Kelemahan:* Metode ini terbukti #reddy("tidak stabil dan sering gagal") (_unreliable_) pada dataset yang digunakan, karena adanya variasi pencahayaan dan posisi tangan.
+]
+
+#slide(title: "Visualisasi Proses: Pendekatan Valley Points")[
+  #align(center)[
+    #rect(width: 95%, height: 300pt)[
+      #align(center + horizon)[*Placeholder untuk* \ *Visualisasi Multi-Langkah Metode Valley Points*]
+    ]
+  ]
+  #align(center)[
+    Visualisasi langkah-langkah pemrosesan: dari siluet, kontur, deteksi titik kunci, hingga ekstraksi ROI akhir.
+  ]
+]
+
+#slide(title: "Ekstraksi ROI: Pendekatan Final (Centroid)")[
+  - Karena metode _valley-point_ tidak stabil, pendekatan yang lebih #greeny("_robust_") dan konsisten digunakan.
+  - Metode ini berfokus pada titik pusat (centroid) dari kontur telapak tangan untuk ekstraksi langsung.
+  - *Proses Kerja:*
+    - Menemukan kontur tangan yang bersih.
+    - Menghitung titik pusat geometris (centroid) dari kontur.
+    - Memotong area besar (misalnya, 1000x1000 piksel) yang berpusat pada centroid.
+    - Menormalisasi ukuran ROI ke dimensi standar yang dibutuhkan model (150x150).
+]
+
+#slide(title: "Visualisasi Proses: Pendekatan Centroid")[
+  #align(center)[
+    #rect(width: 95%, height: 300pt)[
+      #align(center + horizon)[*Placeholder untuk* \ *Visualisasi Multi-Langkah Metode Centroid*]
+    ]
+  ]
+  #align(center)[
+    Visualisasi untuk metode berbasis centroid, yang terbukti lebih stabil dalam menemukan area telapak tangan.
+  ]
+]
+
+#slide(title: "Arsitektur Jaringan Siamese")[
+  #cols(columns: (1fr, 1.5fr))[
+    - *Jaringan Siamese* digunakan karena ideal untuk tugas pengenalan.
+    - Arsitektur ini menggunakan dua "jaringan dasar" yang identik dan berbagi bobot (_weights_).
+    - Setiap jaringan mengubah gambar menjadi sebuah *vektor fitur* (embedding) numerik.
+    - Tujuan model adalah untuk mempelajari ruang fitur di mana vektor dari #greeny("orang yang sama") menjadi berdekatan, dan vektor dari #reddy("orang yang berbeda") menjadi berjauhan.
+  ][
+    #rect(width: 100%, height: 200pt)[
+      #align(center + horizon)[*Placeholder untuk* \ *Diagram Arsitektur Jaringan Siamese*]
+    ]
+  ]
+]
+
+#slide(title: "Proses Pelatihan")[
+  - *Fungsi Loss:* Model dilatih menggunakan *Loss Kontrastif* (_Contrastive Loss_). Fungsi ini "memaksa" model untuk:
+    - #greeny("Meminimalkan") jarak Euclidean untuk pasangan positif (orang yang sama).
+    - #reddy("Memaksimalkan") jarak untuk pasangan negatif (orang yang berbeda).
+  - *Persiapan Data:* Set pelatihan diubah menjadi ribuan pasangan positif dan negatif yang dibuat secara acak.
+  - *Evaluasi:* Kinerja model diukur dari kemampuannya mengidentifikasi gambar "probe" dengan mencari padanan terdekat dalam "galeri" pengguna yang sudah terdaftar.
+]
+
+#title-slide[
+  Hasil & Eksperimen
+]
+
+#slide(title: "Hasil: Model Dasar")[
+  #cols(columns: (1.5fr, 1fr))[
+    - Sebuah model dasar dilatih menggunakan arsitektur CNN sederhana dan set pasangan data yang dibuat di awal (_pre-generated_).
+    - Hasil menunjukkan bahwa model dapat belajar, namun kinerjanya masih rendah.
+    - #align(center)[
+        *Akurasi Keseluruhan: 32%* [cite: 1727] \
+        *Weighted F1-Score: 0.30* [cite: 1737]
+      ]
+    - Laporan menunjukkan varians yang tinggi: beberapa subjek dikenali dengan sempurna, sementara banyak subjek lainnya gagal dikenali sama sekali.
+  ][
+    #rect(width: 100%, height: 300pt)[
+      #align(center + horizon)[*Placeholder untuk* \ *Gambar Laporan Klasifikasi Model Dasar*]
+    ]
+  ]
+]
+
+#slide(title: "Upaya Peningkatan Model")[
+  Beberapa eksperimen dilakukan untuk meningkatkan kinerja:
+
+  1. #stress[Generator Data Dinamis]: Mengganti daftar pasangan statis dengan generator data yang membuat pasangan baru secara acak dan _on-the-fly_ untuk setiap _batch_.
+
+  2. #stress[Arsitektur yang Ditingkatkan]: Memperkenalkan model V2 yang lebih dalam dengan `BatchNormalization` untuk stabilitas dan `Dropout` untuk regularisasi.
+
+  3. #stress[Augmentasi Data]: Menambahkan transformasi acak seperti _flip_ dan rotasi pada gambar pelatihan untuk menciptakan lebih banyak variasi data.
+]
+
+#slide(title: "Tantangan: Pelatihan yang Tidak Stabil")[
+  #cols(columns: (1.2fr, 1fr))[
+    - Uji coba awal dari model V2 yang ditingkatkan menunjukkan tanda-tanda *pelatihan yang tidak stabil*.
+    - #bluey("_Training loss_") menurun, namun #reddy("_validation loss_") meledak ke nilai yang sangat tinggi.
+    - Masalah klasik ini biasanya disebabkan oleh nilai vektor fitur keluaran yang menjadi tidak terbatas.
+    - Solusinya adalah dengan menambahkan lapisan *L2 Normalization* pada akhir jaringan dasar untuk membatasi nilai vektor dan menstabilkan pelatihan.
+  ][
+    #rect(width: 100%, height: 250pt)[
+      #align(center + horizon)[*Placeholder untuk* \ *Grafik Pelatihan yang Tidak Stabil*]
+    ]
+  ]
+]
+
+#title-slide[
+  Kesimpulan
+]
+
+#slide(title: "Kesimpulan & Saran Pengembangan")[
+  *Kesimpulan:*
+  - Alur kerja _end-to-end_ untuk pengenalan telapak tangan berhasil dibangun dan diuji.
+  - Metode ekstraksi ROI berbasis centroid terbukti menjadi langkah pra-pemrosesan yang kuat dan konsisten. [cite: 508]
+  - Model dasar berhasil membuktikan konsep dengan akurasi 32%, menunjukkan bahwa pendekatan Jaringan Siamese dapat diterapkan untuk tugas ini. [cite: 1727]
+
+  *Saran Pengembangan:*
+  - Mengimplementasikan L2 Normalization untuk menstabilkan model V2 dan mengevaluasi kinerjanya secara penuh.
+  - Melakukan _tuning_ pada `recognition_threshold` secara sistematis untuk mengoptimalkan kinerja.
+  - #stress[Peningkatan Kualitas Data & Metode Ekstraksi]:
+    - Metode ekstraksi ROI berbasis *valley-point* sangat sensitif terhadap kualitas data. Dengan data yang lebih konsisten (misalnya, pencahayaan studio atau menggunakan pemindai khusus), metode *valley-point* #greeny[*berpotensi memberikan hasil yang lebih unggul*] karena didasarkan pada titik referensi anatomis yang lebih presisi.
+]
+
 #focus-slide[
-  This is an auto-resized _focus slide_.
+  Terima Kasih \ Ada Pertanyaan?
 ]
-
-// Blank slide
-#blank-slide[
-  - This is a `#blank-slide`.
-
-  - Available #stress[themes]#footnote[Use them as *color* functions! e.g., `#reddy("your text")`]:
-
-  #framed(back-color: white)[
-    #bluey("bluey"), #reddy("reddy"), #greeny("greeny"), #yelly("yelly"), #purply("purply"), #dusky("dusky"), darky.
-  ]
-
-  ```typst
-  #show: typslides.with(
-    ratio: "16-9",
-    theme: "bluey",
-    ...
-  )
-  ```
-
-  - Or just use *your own theme color*:
-    - `theme: rgb("30500B")`
-]
-
-// Slide with title
-#slide(title: "Outlined slide", outlined: true)[
-  - Outline slides with `outlined: true`.
-
-  #grayed([This is a `#grayed` text. Useful for equations.])
-  #grayed($ P_t = alpha - 1 / (sqrt(x) + f(y)) $)
-
-
-]
-
-// Columns
-#slide(title: "Columns")[
-
-  #cols(columns: (2fr, 1fr, 2fr), gutter: 2em)[
-    #grayed[Columns can be included using `#cols[...][...]`]
-  ][
-    #grayed[And this is]
-  ][
-    #grayed[an example.]
-  ]
-
-  - Custom spacing: `#cols(columns: (2fr, 1fr, 2fr), gutter: 2em)[...]`
-
-  - Sample references: @typst, @typslides.
-    - Add a #stress[bibliography slide]...
-
-    1. `#let bib = bibliography("you_bibliography_file.bib")`
-    2. `#bibliography-slide(bib)`
-]
-
-// Bibliography
-#let bib = bibliography("bibliography.bib")
-#bibliography-slide(bib)
