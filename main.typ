@@ -51,10 +51,11 @@
 #slide(title: "Ekstraksi ROI: Pendekatan Awal (Valley Points)")[
   - Pendekatan awal untuk ekstraksi ROI adalah dengan metode _valley-point_. Tujuannya adalah untuk menemukan titik-titik kunci (sela-sela jari) sebagai patokan.
   - *Proses Kerja:*
-    - Membuat _convex hull_ di sekitar kontur tangan.
-    - Menganalisis _convexity defects_ untuk menemukan lembah (_valley_) di antara jari.
-    - Menyaring _defect_ berdasarkan sudut dan posisi untuk memilih kandidat yang relevan.
-  - *Kelemahan:* Metode ini terbukti #reddy("tidak stabil dan sering gagal") (_unreliable_) pada dataset yang digunakan, karena adanya variasi pencahayaan dan posisi tangan.
+    - Membuat _silhouette_ tangan dari image.
+    - Mendeteksi _contour_ terbesar untuk mengambil bentuk tangan.
+    - Mendeteksi _defect_ berdasarkan sudut dan posisi untuk memilih kandidat _valley_ yang relevan (sela jari).
+    - Menetapkan ROI berdasarkan sela jari Kelingking-Manis dan sela jari Telunjuk-Tengah
+  - *Kelemahan:* Metode ini terbukti #reddy("tidak stabil dan sering gagal") (_unreliable_) pada dataset yang digunakan, karena adanya variasi posisi tangan, pencahayaan, juga beberapa tidak menyebarkan jari nya sehingga sela jari sulit dideteksi.
 ]
 
 #slide(title: "Visualisasi Proses: Pendekatan Key Points")[
